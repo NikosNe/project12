@@ -1,0 +1,144 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+/**
+ *  A library of commonly used mathematical functions.
+ *  All functions runs in O(n), where n is the number of bits used
+ *  for representing a two's complement integer value (16 in the Hack computer). 
+ *  Note: Jack compilers implement multiplication and division
+ *  using calls to OS functions in this class.
+ */
+class Math {
+    static int n;             // Number of bits used for representing a two's complement integer
+    static Array powersOfTwo; // Stores 2^0, 2^1, 2^2,..., 2^(n-1)
+
+    // Initializes the Math library.
+    function void init() {
+        let powersOfTwo[0] = 1;
+        let powersOfTwo[1] = 2;
+        let powersOfTwo[2] = 4;
+        let powersOfTwo[3] = 8;
+        let powersOfTwo[4] = 16;
+        let powersOfTwo[5] = 32;
+        let powersOfTwo[6] = 64;
+        let powersOfTwo[7] = 128;
+        let powersOfTwo[8] = 256;
+        let powersOfTwo[9] = 512;
+        let powersOfTwo[10] = 1024;
+        let powersOfTwo[11] = 2048;
+        let powersOfTwo[12] = 4096;
+        let powersOfTwo[13] = 8192;
+        let powersOfTwo[14] = 16384;
+        let powersOfTwo[15] = 32768;
+    }
+
+
+
+    function boolean bit(int x, int i) {
+        int diff;
+        boolean counter;
+        let diff = x - powersOfTwo[i];
+        let counter = false;
+        /**If the power of two is higher than the given number, then the
+         * digit in this position is zero. */
+        if (powersOfTwo[i] > x) {
+            return false;
+        }
+
+        if (i == 0) {
+            return (x % 2) + 1;
+        }
+
+        else {
+            return (x / powersOfTwo[i]) % 2;
+        }
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*'
+     *  in an expression, it handles it by invoking this method. 
+     *  Thus, in Jack, x * y and Math.multiply(x,y) return the same value. */
+    function int multiply(int x, int y) {
+        int sum, shifted_x, i;
+        let sum = 0;
+        let shifted_x = x
+        let i = 0;
+        while (i <= 15) {
+            if (Math.bit(x, i) {
+            let sum = sum + shifted_x;
+            }
+            let shifted_x = shifted_x + shifted_x;
+        }
+        return sum;
+
+    }
+
+    /** Returns the integer part of x / y.
+     *  When a Jack compiler detects the division operator '/'
+     *  an an expression, it handles it by invoking this method.
+     *  Thus, x/y and Math.divide(x,y) return the same value. */
+    function int divide(int x, int y) {
+        int q;
+        if (y > x) {
+            return 0;
+        }
+        let q = divide(x, 2 * y);
+        if ((x - 2 * q * y) < y) {
+            return 2 * q;
+        }
+        else {
+            return (2 * q) + 1;
+        }
+    }
+
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) {
+        int y, i, j;
+        let y = 0;
+        let n = 0;
+
+        /* find 2 to the power of n with a while loop
+        while (x > powersOfTwo[n]) {
+            let n = n + 1;
+        }
+
+        /* implement main while loop
+        /* This is wrong. How can the j variable be created?
+        while (n/2 - 1 > 0) {
+            if ((y + powersOfTwo[(n/2) - 1]) * (y + powersOfTwo[(n/2) - 1]) > x) {
+                return y;
+            }
+            else {
+                let y = y + powersOfTwo[(n/2)];
+            }
+        }
+    }
+
+
+    /** Returns the greater value. */
+    function int max(int a, int b) {
+        if (a > b) {
+            return a;
+        }
+        return b;
+    }
+
+    /** Returns the smaller value. */
+    function int min(int a, int b) {
+            if (a < b) {
+            return a;
+        }
+        return b;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+        if (x < 0) {
+            return -x;
+        }
+        return x;
+
+    }
+}
