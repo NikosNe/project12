@@ -1,0 +1,238 @@
+class Math {
+    static int n;             // Number of bits used for representing a two's complement integer
+    static Array powersOfTwo; // Stores 2^0, 2^1, 2^2,..., 2^(n-1)
+
+    // Initializes the Math library.
+    function void init() {
+        let powersOfTwo = Array.new(16);
+        let powersOfTwo[0] = 1;
+        let powersOfTwo[1] = 2;
+        let powersOfTwo[2] = 4;
+        let powersOfTwo[3] = 8;
+        let powersOfTwo[4] = 16;
+        let powersOfTwo[5] = 32;
+        let powersOfTwo[6] = 64;
+        let powersOfTwo[7] = 128;
+        let powersOfTwo[8] = 256;
+        let powersOfTwo[9] = 512;
+        let powersOfTwo[10] = 1024;
+        let powersOfTwo[11] = 2048;
+        let powersOfTwo[12] = 4096;
+        let powersOfTwo[13] = 8192;
+        let powersOfTwo[14] = 16384;
+        let powersOfTwo[15] = 32767;
+        return;
+    }
+
+    function boolean bit(int x, int i) {
+        var int diff_from_two, diff_from_powers, idx_to_compare;
+        var boolean counter, zero_counter, is_negative, result, preceded_by_zeros;
+        let diff_from_two = x - 2;
+        let diff_from_powers = x - powersOfTwo[i];
+        let counter = true;
+        let zero_counter = false;
+        let preceded_by_zeros = true;
+
+        if ((x = 1) & (i = 0)) {
+             return true;
+        }
+
+        if (powersOfTwo[i] > x) {
+            let result = false;
+        }
+
+        else {
+            while (diff_from_powers > 1) {
+                let diff_from_powers = diff_from_powers - powersOfTwo[i];
+                if (~ diff_from_powers < 0) {
+                    let counter = ~counter;
+                }
+                //do Output.printInt(diff_from_powers);
+                //do Output.println();
+
+            }
+            if (i = 0) {
+                let counter = ~counter;
+            }
+            let result = counter;
+        }
+
+        return result;
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*'
+     *  in an expression, it handles it by invoking this method. 
+     *  Thus, in Jack, x * y and Math.multiply(x,y) return the same value. */
+    function int multiply(int x, int y) {
+        var int sum, shifted_x, i;
+        var boolean x_is_negative, y_is_negative;
+        let sum = 0;
+        let shifted_x = x;
+        let i = 0;
+        if (x < 0) {
+            let x = Math.abs(x);
+            let x_is_negative = true;
+        }
+        if (y < 0) {
+            let y = Math.abs(y);
+            let y_is_negative = true;
+        }
+
+        while (i < 15) {
+
+            if (Math.bit(y, i)) {
+            let sum = sum + shifted_x;
+            }
+
+            let shifted_x = shifted_x + shifted_x;
+            let i = i + 1;
+
+         }
+         //if (x_is_negative & (~y_is_negative)) {
+            //do Output.printInt(x);
+            //do Output.println();
+            //do Output.printInt(y);
+            //do Output.println();
+            //do Output.printString("one negative");
+            //do Output.println();
+            //do Output.printInt(sum);
+            //do Output.println();
+            //let sum = -sum;
+         //}
+
+         if ((~x_is_negative) & y_is_negative) {
+            let sum = -sum;
+         }
+
+        return sum;
+
+    }
+
+    /** Returns the integer part of x / y.
+     *  When a Jack compiler detects the division operator '/'
+     *  an an expression, it handles it by invoking this method.
+     *  Thus, x/y and Math.divide(x,y) return the same value. */
+
+function int divide(int x, int y) {
+    var int q, abs_x, abs_y, abs_result, result;
+
+
+
+    let abs_x = Math.abs(x);
+    let abs_y = Math.abs(y);
+    do Output.printString("abs x is ");
+    do Output.printInt(abs_x);
+    do Output.println();
+    do Output.printString("abs y is ");
+    do Output.printInt(abs_y);
+    do Output.println();
+    do Output.printInt(abs_y > abs_x);
+    do Output.println();
+    if ((abs_y > abs_x) | (y < 0)) {
+
+    do Output.printString("here");
+    do Output.println();
+        return 0;
+    }
+
+
+    let q = Math.divide(x, 2 * y);
+
+    if ((abs_x - (2 * q * abs_y)) < abs_y) {
+            if ((x < 0) & (y > 0)) {
+            //do Output.printString("Returning ");
+            //do Output.printInt(2*q);
+            //do Output.println();
+            return -2 * q;
+            }
+            if ((x < 0) & (y < 0)) {
+            return 2 * q;
+            }
+
+            if ((x > 0) & (y > 0)) {
+
+            return 2 * q;
+            }
+
+            else {
+            return -2 * q;
+            }
+    }
+    else {
+            if ((x < 0) & (y > 0)) {
+            //do Output.printString("q is ");
+            //do Output.printInt(q);
+            //do Output.println();
+            //do Output.printString("Returning ");
+            //do Output.printInt(q + q + 1);
+            //do Output.println();
+            return -((2 * q) + 1);
+            }
+            if ((x < 0) & (y < 0)) {
+            return (2 * q) + 1;
+            }
+
+            if ((x > 0) & (y > 0)) {
+            return (2 * q) + 1;
+            }
+
+            else {
+            return -((2 * q) + 1);
+            }
+          }
+}
+
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) {
+        var int y, i, j;
+        let y = 0;
+        let n = 0;
+
+        while (x > powersOfTwo[n]) {
+            let n = n + 1;
+        }
+
+        let j = n/2 - 1;
+
+
+        while (j > 0) {
+            if ((~((y + powersOfTwo[(n/2) - 1]) * (y + powersOfTwo[(n/2) - 1])) > x) &
+            (((y + powersOfTwo[(n/2) - 1]) * (y + powersOfTwo[(n/2) - 1])) > 0)) {
+                let y = y + powersOfTwo[(n/2)];
+                let j = j - 1;
+            }
+            else {
+                return y;
+
+            }
+        }
+        return y;
+    }
+
+
+    /** Returns the greater value. */
+    function int max(int a, int b) {
+        if (a > b) {
+            return a;
+        }
+        return b;
+    }
+
+    /** Returns the smaller value. */
+    function int min(int a, int b) {
+            if (a < b) {
+            return a;
+        }
+        return b;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+        if (x < 0) {
+            return -x;
+        }
+        return x;
+    }
+}

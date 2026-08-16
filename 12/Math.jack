@@ -104,14 +104,17 @@ class Math {
             let n = n + 1;
         }
 
+        let j = n/2 - 1;
+
         /* implement main while loop
         /* This is wrong. How can the j variable be created?
-        while (n/2 - 1 > 0) {
+        while (j > 0) {
             if ((y + powersOfTwo[(n/2) - 1]) * (y + powersOfTwo[(n/2) - 1]) > x) {
                 return y;
             }
             else {
                 let y = y + powersOfTwo[(n/2)];
+                j = j - 1;
             }
         }
     }
