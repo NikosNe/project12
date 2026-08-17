@@ -89,17 +89,6 @@ class Math {
             let i = i + 1;
 
          }
-         //if (x_is_negative & (~y_is_negative)) {
-            //do Output.printInt(x);
-            //do Output.println();
-            //do Output.printInt(y);
-            //do Output.println();
-            //do Output.printString("one negative");
-            //do Output.println();
-            //do Output.printInt(sum);
-            //do Output.println();
-            //let sum = -sum;
-         //}
 
          if ((~x_is_negative) & y_is_negative) {
             let sum = -sum;
@@ -109,78 +98,38 @@ class Math {
 
     }
 
+
+function int divide_loop(int x, int y) {
+    var int q, abs_x, abs_y;
+    let abs_x = Math.abs(x);
+    let abs_y = Math.abs(y);
+    if ((abs_y > abs_x) | (y < 0)) {
+        return 0;
+    }
+
+    let q = Math.divide_loop(x, 2 * y);
+
+    if ((abs_x - (2 * q * abs_y)) < abs_y) {
+        return 2 * q;
+    }
+    else {
+            return (2 * q) + 1;
+        }
+}
     /** Returns the integer part of x / y.
      *  When a Jack compiler detects the division operator '/'
      *  an an expression, it handles it by invoking this method.
      *  Thus, x/y and Math.divide(x,y) return the same value. */
-
 function int divide(int x, int y) {
-    var int q, abs_x, abs_y, abs_result, result;
-
-
-
-    let abs_x = Math.abs(x);
-    let abs_y = Math.abs(y);
-    do Output.printString("abs x is ");
-    do Output.printInt(abs_x);
-    do Output.println();
-    do Output.printString("abs y is ");
-    do Output.printInt(abs_y);
-    do Output.println();
-    do Output.printInt(abs_y > abs_x);
-    do Output.println();
-    if ((abs_y > abs_x) | (y < 0)) {
-
-    do Output.printString("here");
-    do Output.println();
-        return 0;
-    }
-
-
-    let q = Math.divide(x, 2 * y);
-
-    if ((abs_x - (2 * q * abs_y)) < abs_y) {
-            if ((x < 0) & (y > 0)) {
-            //do Output.printString("Returning ");
-            //do Output.printInt(2*q);
-            //do Output.println();
-            return -2 * q;
-            }
-            if ((x < 0) & (y < 0)) {
-            return 2 * q;
-            }
-
-            if ((x > 0) & (y > 0)) {
-
-            return 2 * q;
-            }
-
-            else {
-            return -2 * q;
-            }
-    }
-    else {
-            if ((x < 0) & (y > 0)) {
-            //do Output.printString("q is ");
-            //do Output.printInt(q);
-            //do Output.println();
-            //do Output.printString("Returning ");
-            //do Output.printInt(q + q + 1);
-            //do Output.println();
-            return -((2 * q) + 1);
-            }
-            if ((x < 0) & (y < 0)) {
-            return (2 * q) + 1;
-            }
-
-            if ((x > 0) & (y > 0)) {
-            return (2 * q) + 1;
-            }
-
-            else {
-            return -((2 * q) + 1);
-            }
-          }
+   var int result;
+   let result = Math.divide_loop(x, y);
+   if (x < 0) {
+        let result = -result;
+   }
+   do Output.printString("Returning division result ");
+   do Output.printInt(result);
+   do Output.println();
+   return result;
 }
 
 
@@ -196,7 +145,6 @@ function int divide(int x, int y) {
 
         let j = n/2 - 1;
 
-
         while (j > 0) {
             if ((~((y + powersOfTwo[(n/2) - 1]) * (y + powersOfTwo[(n/2) - 1])) > x) &
             (((y + powersOfTwo[(n/2) - 1]) * (y + powersOfTwo[(n/2) - 1])) > 0)) {
@@ -208,6 +156,9 @@ function int divide(int x, int y) {
 
             }
         }
+        do Output.printString("Returning square root");
+        do Output.printInt(y);
+        do Output.println();
         return y;
     }
 
