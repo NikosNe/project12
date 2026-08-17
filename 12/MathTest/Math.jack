@@ -123,9 +123,11 @@ function int divide_loop(int x, int y) {
 function int divide(int x, int y) {
    var int result;
    let result = Math.divide_loop(x, y);
-   if (x < 0) {
+  if (x < 0) {
         let result = -result;
    }
+   do Output.printInt(result);
+   do Output.println();
    return result;
 }
 
@@ -136,29 +138,40 @@ function int sqrt(int x) {
     let y = 0;
     let n = 0;
 
+    do Output.printString("x is: ");
+    do Output.printInt(x);
+    do Output.println();
     while (x > powersOfTwo[n]) {
         let n = n + 1;
     }
 
+    do Output.printString("n is: ");
+    do Output.printInt(n);
+    do Output.println();
     let j = (n/2) - 1;
 
-    while (j > 0) {
+    while ((j > 0) | (j = 0)) {
+        // 2^j
         let current_power_of_two = powersOfTwo[j];
+        // sum = (y + 2^j)
         let sum = y + current_power_of_two;
+        // sum_squared = (y + 2^j)^2
         let sum_squared = sum * sum;
-        if (((sum_squared < x) | (sum_squared = x))) {
-            let y = y + sum;
-            let j = j - 1;
+        do Output.printString("Current sum squared: ");
+        do Output.printInt(sum_squared);
+        do Output.println();
+
+        if ((sum_squared < x) | (sum_squared = x)) {
+            let y = sum;
+
+        do Output.printString("y is: ");
+        do Output.printInt(y);
+        do Output.println();
         }
-        else {
-            do Output.printString("Returning square root");
-            do Output.printInt(y);
-            do Output.println();
-            return y;
-        }
+        let j = j - 1;
     }
     return y;
-}
+ }
 
 
     /** Returns the greater value. */
