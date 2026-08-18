@@ -141,6 +141,7 @@ function int sqrt(int x) {
     do Output.printString("x is: ");
     do Output.printInt(x);
     do Output.println();
+    // Find the largest power of 2 that is smaller than or equal to x
     while (x > powersOfTwo[n]) {
         let n = n + 1;
     }
@@ -148,7 +149,12 @@ function int sqrt(int x) {
     do Output.printString("n is: ");
     do Output.printInt(n);
     do Output.println();
-    let j = (n/2) - 1;
+    let j = (n/2);
+
+
+    do Output.printString("j is: ");
+    do Output.printInt(j);
+    do Output.println();
 
     while ((j > 0) | (j = 0)) {
         // 2^j
@@ -157,11 +163,11 @@ function int sqrt(int x) {
         let sum = y + current_power_of_two;
         // sum_squared = (y + 2^j)^2
         let sum_squared = sum * sum;
-        do Output.printString("Current sum squared: ");
-        do Output.printInt(sum_squared);
+        do Output.printString("Current sum: ");
+        do Output.printInt(sum);
         do Output.println();
 
-        if ((sum_squared < x) | (sum_squared = x)) {
+        if (((sum_squared < x) | (sum_squared = x)) & sum > 0 & sum_squared > 0) {
             let y = sum;
 
         do Output.printString("y is: ");
@@ -172,7 +178,6 @@ function int sqrt(int x) {
     }
     return y;
  }
-
 
     /** Returns the greater value. */
     function int max(int a, int b) {
