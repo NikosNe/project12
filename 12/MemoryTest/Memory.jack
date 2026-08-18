@@ -8,22 +8,39 @@
  * consists of 32,768 words, each holding a 16-bit binary number.
  */ 
 class Memory {
+     static Array ram, heap;
+     int freeList;
 
     /** Initializes the class. */
     function void init() {
+        let ram = 0;
+        let heap = 2048;
+        let freeList = 2048;
+        let heap[0] = 0;
+        let heap[1] = 14335;
     }
 
     /** Returns the RAM value at the given address. */
     function int peek(int address) {
+        return ram[address];
     }
 
     /** Sets the RAM value at the given address to the given value. */
     function void poke(int address, int value) {
+        do ram[address] = value;
     }
 
     /** Finds an available RAM block of the given size and returns
      *  a reference to its base address. */
     function int alloc(int size) {
+        //search freeList using best-fit or first-fit to
+        //obtain a segment with segment.size >= size + 2
+        if (freeList = 14335) {
+            return -1;
+        }
+
+        //if no such segment is found return failure
+        //block = base address of the found space
     }
 
     /** De-allocates the given object (cast as an array) by making

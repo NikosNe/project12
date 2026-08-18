@@ -1,0 +1,55 @@
+While we haven’t exhausted the freeList,
+Start looking. First at heap[0], if it’s zero, then return zero
+If it’s not zero, but addr <> 0, then look at heap[addr].
+Add addr + heap[addr + 1]
+
+If heap[addr] = 0 we have reached the final list segment.
+
+Look at every heap[addr] and heap[addr + 1]
+if (heap[addr + 1] >= size + 2), take the needed part of the segment
+And return addr.
+
+If heap[addr] = 0 and (heap[addr + 1] < size + 2 or heap[addr + 1] >= 14335
+, return -1
+
+How do we structure the while loop and
+how do we take the needed part of the segment?
+
+freeList starts at 2048 and ends at 16383
+
+let addr = 0;
+// Search the free list
+// Hm, how can we actually know there is no free space??
+// What is we add all the block sizes from the linked list
+// and if 14335 - total heap size minus the result is less than size + 2,
+// return -1.
+
+// How and where is freeList used?
+let total_block_size = 0;
+while (14335 - total_block_size < size + 2) {
+	// If the segment is possible
+	if (heap[addr + 1] >= size + 2) {
+		// decrease the available size of the segment by the given size plus overhead blocks.
+		let new_size = heap[addr + 1] - size - 2;
+		let heap[addr + 1] = new_size;
+		// Find the new block’s top overhead field
+		// heap[addr + heap[addr + 1]] - size
+		// Return it
+		// Is this correct?
+		return (addr + new_size + 1);
+	}
+	// If we didn’t return, the segment wasn’t possible, so we re-adjust
+	// the total block size and look at the connected block
+	let total_block_size = total_block_size + heap[addr + 1];
+	addr = heap[addr];
+}
+
+size = 3
+Addr = 8012
+becomes addr = heap[7513] = 9576
+heap[9577] = 7 ->
+heap[9577] = 7 - 5 = 2
+
+So, the new block’s base address should be right after where the chopped block ends:
+so addr + 1 + 2 + 1
+8012: [7513, 4,.,.,.,.] 7513: [9576, 7,.,.,.,.,.,.,.] 9576: [0,5,.,.,.,.,.,]
