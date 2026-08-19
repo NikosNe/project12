@@ -1,26 +1,25 @@
 
 
-let addr = 0;
-// Search the free list
 
-// How and where is freeList used?
-let total_block_size = 0;
+
 
 // While there is still enough space in the heap
-while ((14335 - total_block_size > size + 2) | (14335 - total_block_size = size + 2)) {
-	// If the segment is possible
+while (is_enough_space(total_block_size, size)) {
+	// addr + 1 holds the data size of the segment.
+
 	if (heap[addr + 1] >= size + 2) {
+	    // If the segment is possible,
 		// decrease the available size of the segment by the given size plus the two overhead blocks.
 		let new_size = heap[addr + 1] - size - 2;
 		let heap[addr + 1] = new_size;
 		// Find the new block’s top overhead field
+		// The new block's base address should be right after where the chopped block ends.
 		let freelist = freelist + addr + 1 + new_size
 		// Return it
-		// Is this correct?
 		return freelist;
 	}
 	// If we didn’t return, the segment wasn’t possible, so we re-adjust
-	// the total block size and look at the connected block
+	// the total size occupied by blocks and look at the connected block
 	let total_block_size = total_block_size + heap[addr + 1];
 	addr = heap[addr];
 }

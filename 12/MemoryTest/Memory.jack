@@ -8,16 +8,19 @@
  * consists of 32,768 words, each holding a 16-bit binary number.
  */ 
 class Memory {
-     static Array ram, heap;
-     int freeList;
+     static Array ram;
+     static Array heap;
+     static int freeList, addr, total_block_size, heap_size;
 
     /** Initializes the class. */
     function void init() {
         let ram = 0;
         let heap = 2048;
+        let heap_size = 14335;
         let freeList = 2048;
         let heap[0] = 0;
-        let heap[1] = 14335;
+        let heap[1] = heap_size;
+        return;
     }
 
     /** Returns the RAM value at the given address. */
@@ -27,24 +30,56 @@ class Memory {
 
     /** Sets the RAM value at the given address to the given value. */
     function void poke(int address, int value) {
-        do ram[address] = value;
+        let ram[address] = value;
+        do Output.printInt(ram[address]);
+        do Output.println();
+        return;
     }
 
-    /** Finds an available RAM block of the given size and returns
-     *  a reference to its base address. */
-    function int alloc(int size) {
-        //search freeList using best-fit or first-fit to
-        //obtain a segment with segment.size >= size + 2
-        if (freeList = 14335) {
-            return -1;
+    function boolean is_enough_space(int total_block_size, int size) {
+        if ((heap_size - total_block_size > size + 2) | (heap_size - total_block_size = size + 2)) {
+            return true;
         }
-
-        //if no such segment is found return failure
-        //block = base address of the found space
+        else {
+            return false;
+        }
     }
+
+/** Finds an available RAM block of the given size and returns
+ *  a reference to its base address. */
+ function Array alloc(int size) {
+        var int addr, total_block_size, new_size;
+        let addr = 0;
+        let total_block_size = 0;
+
+        do Output.printString("Entering while loop: ");
+        do Output.println();
+    // While there is still enough space in the heap
+    while (Memory.is_enough_space(total_block_size, size)) {
+        // addr + 1 holds the data size of the segment.
+
+        if ((heap[addr + 1] > size + 2) | (heap[addr + 1] = size + 2)) {
+            // If the segment is possible,
+            // decrease the available size of the segment by the given size plus the two overhead blocks.
+            let new_size = heap[addr + 1] - size - 2;
+            let heap[addr + 1] = new_size;
+            // Find the new block’s top overhead field
+            // The new block's base address should be right after where the chopped block ends.
+            let freeList = freeList + addr + 1 + new_size;
+            // Return it
+            return freeList;
+        }
+        // If we didn’t return, the segment wasn’t possible, so we re-adjust
+        // the total size occupied by blocks and look at the connected block
+        let total_block_size = total_block_size + heap[addr + 1];
+        let addr = heap[addr];
+        }
+        return -1; // No available block found
+}
 
     /** De-allocates the given object (cast as an array) by making
      *  it available for future allocations. */
     function void deAlloc(Array o) {
+        return;
     }    
 }
