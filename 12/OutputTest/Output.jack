@@ -194,9 +194,10 @@ class Output {
         // The cursor's i-coordinate should be the x of its left end
         // and its j coordinate its y.
         do Screen.setColor(true);
-        do Screen.drawRectangle(j * 8, i, ((j + 1) * 8) - 1, i + 11);
+        //do Screen.drawRectangle(j * 8, i, ((j + 1) * 8) - 1, i + 11);
+        do Screen.drawRectangle(j * 8, i * 11, (j * 8) + 7, (i * 11) + 10);
         do Output.setPosition(0, j * 8);
-        do Output.setPosition(1, i);
+        do Output.setPosition(1, i * 11);
         return;
     }
 
