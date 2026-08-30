@@ -12,23 +12,84 @@ class Main {
         let r = 8000;   // Base address
 
         let r[0] = 2 * 3;                  // 6
+        if (r[0] = 6) {
+            do Output.printString("r[0] is correct");
+            do Output.println();
+        }
         let r[1] = r[0] * (-30);           // 6 * (-30) = -180
+        if (r[1] = -180) {
+            do Output.printString("r[1] is correct");
+            do Output.println();
+        }
         let r[2] = r[1] * 100;             // (-180) * 100 = -18000
+        if (r[2] = -18000) {
+            do Output.printString("r[2] is correct");
+            do Output.println();
+        }
         let r[3] = 1 * r[2];               // 1 * (-18000) = -18000
+        if (r[3] = -18000) {
+            do Output.printString("r[3] is correct");
+            do Output.println();
+        }
         let r[4] = r[3] * 0;               // 0
-        
+        if (r[4] = 0) {
+            do Output.printString("r[4] is correct");
+            do Output.println();
+        }
         let r[5] = 9 / 3;                  // 3
+        if (r[5] = 3) {
+            do Output.printString("r[5] is correct");
+            do Output.println();
+        }
         let r[6] = -18000 / 6;           // -3000
+        if (r[6] = -3000) {
+            do Output.printString("r[6] is correct");
+            do Output.println();
+        }
         let r[7] = 32766 / (-32767);       // (2^15 - 2) / (2^15 - 1) = 0
-        
+        if (r[7] = 0) {
+            do Output.printString("r[7] is correct");
+            do Output.println();
+        }
         let r[8] = Math.sqrt(9);           // 3
+        if (r[8] = 3) {
+            do Output.printString("r[8] is correct");
+            do Output.println();
+        }
         let r[9] = Math.sqrt(32767);       // 181
-        
+        if (r[9] = 181) {
+            do Output.printString("r[9] is correct");
+            do Output.println();
+        }
         let r[10] = Math.min(345, 123);    // 123
+        if (r[10] = 123) {
+            do Output.printString("r[10] is correct");
+            do Output.println();
+        }
         let r[11] = Math.max(123, -345);   // 123
+        if (r[11] = 123) {
+            do Output.printString("r[11] is correct");
+            do Output.println();
+        }
         let r[12] = Math.abs(27);          // 27
+        if (r[12] = 27) {
+            do Output.printString("r[12] is correct");
+            do Output.println();
+        }
         let r[13] = Math.abs(-32767);      // 32767
-        
+        if (r[13] = 32767) {
+            do Output.printString("r[13] is correct");
+            do Output.println();
+        }
+        let r[14] = -30 * -30;
+        if (r[14] = 900) {
+            do Output.printString("r[14] is correct");
+            do Output.println();
+        }
+        else {
+            do Output.printInt(-30 * -30);
+            do Output.println();
+        }
         return;
     }
 }

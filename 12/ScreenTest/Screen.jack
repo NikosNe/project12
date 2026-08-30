@@ -1,0 +1,255 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Screen.jack
+/**
+ * A library of functions for displaying graphics on the screen.
+ * The Hack physical screen consists of 512 rows (indexed 0..511, top to bottom)
+ * of 256 pixels each (indexed 0..255, left to right). The top left pixel on 
+ * the screen is indexed (0,0).
+ */
+class Screen {
+    static int base_address, bottom_address;
+    static boolean bit_color;
+
+    /** Initializes the Screen. */
+    //Not sure that this is the case. Simple to change if not.
+    function void init() {
+        let bit_color = true;
+        let base_address = 16384;
+        let bottom_address = 24575;
+        return;
+    }
+
+
+    /** Erases the entire screen. */
+    function void clearScreen() {
+        var int mem_position;
+        let mem_position = base_address;
+
+        while (mem_position < bottom_address) {
+            do Memory.poke(mem_position, 0);
+            let mem_position = mem_position + 1;
+        }
+        return;
+    }
+
+    /** Sets the current color, to be used for all subsequent drawXXX commands.
+     *  Black is represented by true, white by false. */
+    function void setColor(boolean b) {
+        if (b) {
+            let bit_color = true;
+        }
+        else {
+            let bit_color = false;
+        }
+
+        return;
+    }
+
+    /** Draws the (x,y) pixel, using the current color. */
+    function void drawPixel(int x, int y) {
+        var int address, value, bit, powers_of_two;
+        let bit = x;
+        let address = (32 * y) + (x / 16);
+        let value = Memory.peek(base_address + address);
+
+        // Calculate x % 16
+        while ((bit > 16) | (bit = 16)) {
+           let bit  = bit - 16;
+        }
+
+        // Use Math.bit and check the bit in the position of interest
+        // if the bit is the same as bit_color, don't do anything
+        if (~Math.bit(value, bit) = bit_color) {
+            // Find the bit inverter
+            let powers_of_two = Math.get_powers_of_two();
+            let value = powers_of_two[bit] | value;
+        }
+        // if it's the opposite, then do the following operation.
+        // 16bit OR operation to manipulate the bit
+        // i.e. use bitwise or with a number that has
+        // zero's everywhere apart from the bit we want to switch
+        do Memory.poke(base_address + address, value);
+        return;
+    }
+
+    function boolean isStartWord(int x) {
+        var int mult;
+        let mult = 0;
+        while (~(mult > 32)) {
+            if (x = (16 * mult)) {
+                return true;
+            }
+            let mult = mult + 1;
+        }
+        return false;
+    }
+
+    function boolean isEndWord(int x) {
+        var int adder;
+        let adder = 15;
+        while (~(adder > 511)) {
+            if (x = adder) {
+                return true;
+            }
+            let adder = adder + 16;
+        }
+        return false;
+    }
+
+    function int largestUpperLimit(int x) {
+        var int adder;
+        let adder = 15;
+        while (~(adder > 511)) {
+            if (x < adder) {
+                return adder;
+            }
+            let adder = adder + 16;
+        }
+        return 0;
+    }
+
+    function int largestLowerLimit(int x) {
+        var int subtractor, difference;
+        let subtractor = 16;
+        let difference = x - subtractor;
+        while (~(difference < 0)) {
+            let subtractor = subtractor + 16;
+            let difference = x - subtractor;
+        }
+        return subtractor;
+    }
+
+    function void drawHorizontalLine(int x1, int y, int x2) {
+        var int current_position, ending_position, largest_upper_limit, largest_lower_limit;
+        let current_position = x1;
+        let largest_upper_limit = 0;
+        let largest_lower_limit = 0;
+        let ending_position = x2;
+
+        if (~Screen.isStartWord(x1)) {
+            //Find the upper limit closest to x1 and larger than it
+             //draw pixels from x1 up to largest_upper_limit.
+             let largest_upper_limit = Screen.largestUpperLimit(x1);
+             while (~(current_position > largest_upper_limit)) {
+                do Memory.poke(base_address  + (32 * y) + (current_position / 16), bit_color);
+                let current_position = current_position + 1;
+             }
+             //adjust current_position to the very next bit position.
+             let current_position = largest_upper_limit + 1;
+        }
+
+        if (~Screen.isEndWord(x2)) {
+            //Find the lower limit closest to x2 and less than it
+            let largest_lower_limit = Screen.largestLowerLimit(x2);
+            //draw pixels from it to x2 and adjust ending position to the bit prior to it
+            while (~(largest_lower_limit > x2)) {
+                do Memory.poke(base_address  + (32 * y) + (largest_lower_limit / 16), bit_color);
+                let largest_lower_limit = largest_lower_limit + 1;
+            }
+            let ending_position = largest_lower_limit - 1;
+        }
+
+        while (current_position < ending_position) {
+            do Memory.poke(base_address  + (32 * y) + (current_position / 16), bit_color);
+            let current_position = current_position + 16;
+        }
+
+        return;
+    }
+
+    /** Draws a line from pixel (x1,y1) to pixel (x2,y2), using the current color. */
+    function void drawLine(int x1, int y1, int x2, int y2) {
+        var int a, b, diff, dx, dy;
+        let a = 0;
+        let b = 0;
+        let dx = Math.abs(x1 - x2);
+        let dy = Math.abs(y1 - y2);
+        let diff = (a * dy) - (b * dx);
+
+        if (dx = 0) {
+            while (~(b > dy)) {
+                do Screen.drawPixel(x1, Math.max(y1, y2) - b);
+                let b = b + 1;
+            }
+        }
+
+        else {
+            if (dy = 0) {
+                //do Screen.drawHorizontalLine(Math.min(x1, x2), y1, Math.max(x1, x2));
+                while (~(a > dx)) {
+                    do Screen.drawPixel(Math.min(x1, x2) + a, y1);
+                    let a = a + 1;
+                }
+
+            }
+            else {
+                while ((~(a > dx)) & (~(b > dy))) {
+                    if ((x1 < x2) & (y1 > y2)) {
+                    do Screen.drawPixel(x1 + a, y1 - b);
+                }
+                    if ((x1 < x2) & (y1 < y2)) {
+                    do Screen.drawPixel(x1 + a, y1 + b);
+                }
+                    if ((x1 > x2) & (y1 > y2)) {
+                    do Screen.drawPixel(x1 - a, y1 - b);
+                }
+                    if ((x1 > x2) & (y1 < y2)) {
+                    do Screen.drawPixel(x1 - a, y1 + b);
+                }
+                if (diff < 0 ) {
+                    let a = a + 1;
+                    let diff = diff + dy;
+                }
+                else {
+                    let b = b + 1;
+                    let diff = diff - dx;
+                }
+        }
+        }
+        }
+
+        return;
+    }
+
+    /** Draws a filled rectangle whose top left corner is (x1, y1)
+     *  and bottom right corner is (x2,y2), using the current color. */
+    function void drawRectangle(int x1, int y1, int x2, int y2) {
+         var int a;
+         var boolean is_long;
+         let a = 0;
+         let is_long = false;
+        // top left corner: (x1, y1), top right corner: (x2, y1)
+        // bottom left corner: (x1, y2), bottom right corner: (x2, y2)
+
+        if ((y2 - y1) > (x2 - x1)) {
+            let is_long = true;
+        }
+
+        if (is_long) {
+            while (~(x1 + a > x2)) {
+                do Screen.drawLine(x1 + a, y1, x1 + a, y2);
+                let a = a + 1;
+            }
+        }
+        else {
+                while (~(y1 + a > y2)) {
+                    do Screen.drawLine(x1, y1 + a, x2, y1 + a);
+                    let a = a + 1;
+            }
+        }
+        return;
+    }
+
+    /** Draws a filled circle of radius r<=181 around (x,y), using the current color. */
+    function void drawCircle(int x, int y, int r) {
+        var int dy;
+        let dy = -r;
+        while (dy < r) {
+            do Screen.drawLine(x - Math.sqrt((r*r)-(dy*dy)), y + dy, x + Math.sqrt((r*r)-(dy*dy)), y + dy);
+            let dy = dy + 1;
+        }
+        return;
+    }
+}
