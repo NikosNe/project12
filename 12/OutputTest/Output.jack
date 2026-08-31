@@ -30,6 +30,8 @@ class Output {
     }
 
     function void setPosition(int index, int value) {
+        //0th index has the cursor's i coordinate (row, i.e. y)
+        //1th index has the cursor's j coordinate (column, i.e. x)
         let cursorPosition[index] = value;
         return;
     }
@@ -191,20 +193,19 @@ class Output {
     /** Moves the cursor to the j-th column of the i-th row,
      *  and erases the character displayed there. */
     function void moveCursor(int i, int j) {
-        // The cursor's i-coordinate should be the x of its left end
-        // and its j coordinate its y.
+        // The cursor's j-coordinate should be the x of its left end
+        // and its i coordinate its y in the character grid (11x8)
         do Screen.setColor(true);
-        //do Screen.drawRectangle(j * 8, i, ((j + 1) * 8) - 1, i + 11);
         do Screen.drawRectangle(j * 8, i * 11, (j * 8) + 7, (i * 11) + 10);
-        do Output.setPosition(0, j * 8);
-        do Output.setPosition(1, i * 11);
+        do Output.setPosition(0, i);
+        do Output.setPosition(1, j);
         return;
     }
 
     /** Displays the given character at the cursor location,
      *  and advances the cursor one column forward. */
     function void printChar(char c) {
-        var int adder, new_address;
+        var int adder, new_address, x, y;
         var Array map;
         let adder = 0;
 
@@ -213,20 +214,35 @@ class Output {
         // How do we know where the cursor is?? By calling getPosition(0) we get its upper left x
         // and by calling getPosition(1) its upper left y.
         // From these coordinates, how can we get the relevant memory addresses?
+        As each character is 8 wide by 11 long, each entry on the bitmap should be an 8 bit entry
+So, each word will occupy 2 entries of a character.
+Therefore, the bitmaps of every 2nd character will need to be added without reversal
+The bitmaps of every 1st character will be poked after being reversed
+function sixteen_bits_reverse(num) {
+    var result = 0; // Initialize result to store the reversed number
+    for (var i = 0; i < 16; i++) {
+        result = result * 2 + (num % 2); // Reversing the bits by shifting result left and adding the last bit of 'num'
+        num = Math.floor(num / 2); // Right-shifting 'num' to access the next bit
+    }
+    return result; // Return the reversed 16-bit number
+}
         while (~(adder > 10)) {
-            let new_address = baseAddress + (32 * (Output.getPosition(1) + adder)) + (Output.getPosition(0) / 16);
+            let x = Output.getPosition(1) * 8;
+            let y = Output.getPosition(0) * 11;
+            let new_address = baseAddress + (32 * (x + adder)) + (y / 16);
             let map = Output.getMap(c);
             do Memory.poke(new_address, map[adder]);
             let adder = adder + 1;
         }
         //if the cursor is not on the end of the grid, move its x-coordinate by 8
-        if (Output.getPosition(0) < 503) {
-           do Output.moveCursor(Output.getPosition(0) + 8, Output.getPosition(1));
+        if (Output.getPosition(1) < 63) {
+           do Output.moveCursor(Output.getPosition(0), Output.getPosition(1) + 1);
         }
         //if it's on the end of the grid, move it to the beginning of the next line
-        else {
-            do Output.moveCursor(0, Output.getPosition(1) + 11);
-        }
+        //TODO: Unless it's already on the very last line. In which case it shouldn't be moved
+        if ((Output.getPosition(1) = 63) & (Output.getPosition(0) < 22)) {
+                do Output.moveCursor(Output.getPosition(0) + 1, 0);
+            }
         return;
 
     }
