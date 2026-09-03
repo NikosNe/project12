@@ -18,9 +18,12 @@ class Output {
     // Character map for displaying characters
     static Array charMaps, cursorPosition;
     static int baseAddress;
+    static Array powers_of_two;
+    
 
     /** Initializes the screen, and locates the cursor at the screen's top-left. */
     function void init() {
+        let powers_of_two = Math.get_powers_of_two();
         let baseAddress = 16384;
         let cursorPosition = Array.new(2);
         let cursorPosition[0] = 0;
@@ -88,7 +91,7 @@ class Output {
         do Output.create(64,30,51,51,59,59,59,27,3,30,0,0);  // @
         do Output.create(63,30,51,51,24,12,12,0,12,12,0,0);  // ?
 
-        do Output.create(65,0,0,0,0,0,0,0,0,0,0,0);          // A ** TO BE FILLED **
+        do Output.create(65,12,30,51,51,63,51,51,51,51,51,0);          // A ** TO BE FILLED **
         do Output.create(66,31,51,51,51,31,51,51,51,31,0,0); // B
         do Output.create(67,28,54,35,3,3,3,35,54,28,0,0);    // C
         do Output.create(68,15,27,51,51,51,51,51,27,15,0,0); // D
@@ -202,29 +205,31 @@ class Output {
         return;
     } 
 
-    function int sixteen_bits_reverse(int num) {
-        var int result, index, mod;
-        let index = 0;
+    function int bit_shifting(int num) {
+        var int bit_index, result;
+        var Array powers_of_two;
+        let bit_index = 0;
         let result = 0;
-        let mod = num;
-        while (mod > 2) {
-            let mod = mod - 2;
-        }
-        while (index < 16) {
-            let result = result * 2 + mod;
-            let num = num / 2;
-            let index = index - 1;
+
+        while (bit_index < 8) {
+            let result = result + ((-Math.bit(num, bit_index)) * powers_of_two[bit_index + 8]);
+            let bit_index = bit_index + 1;
         }
 
         return result;
     }
 
+
     /** Displays the given character at the cursor location,
      *  and advances the cursor one column forward. */
     function void printChar(char c) {
-        var int adder, new_address, x, y, reversed_bits;
+        var int adder, new_address, x, y, shifted_bits, existing_value;
         var Array map;
+        var boolean is_odd;
         let adder = 0;
+        let x = Output.getPosition(1);
+        let y = Output.getPosition(0);
+        let is_odd = Math.bit(x, 0);
 
         // TODO: For each charMap, get all numbers and poke them to the right
         // Memory addresses.
@@ -237,14 +242,23 @@ class Output {
         //The bitmaps of every 1st character will be poked after being reversed
 
         while (~(adder > 10)) {
-            let x = Output.getPosition(1);
-            let y = Output.getPosition(0);
-            let new_address = baseAddress + ((y + adder) * 32) + (x * 8);
-            let map = Output.getMap(c);
-            //let reversed_bits = Output.sixteen_bits_reverse(map[adder]);
 
-            //do Memory.poke(new_address, map[adder]);
-            do Memory.poke(new_address, map[adder]);
+            let new_address = baseAddress + ((y + adder) * 32) + (x / 2);
+            let map = Output.getMap(c);
+
+            if (is_odd = true) {
+                let shifted_bits = Output.bit_shifting(map[adder]);
+                //let shifted_bits = -1;
+                let existing_value = Memory.peek(new_address);
+                do Memory.poke(new_address, (map[adder] * 256) | existing_value);
+                //do Memory.poke(new_address, ~existing_value);
+                //do Memory.poke(new_address, (map[adder] * 256));
+                //do Memory.poke(new_address, shifted_bits | existing_value);
+                //do Memory.poke(new_address, shifted_bits);
+            }
+            else {
+                do Memory.poke(new_address, map[adder]);
+                }
             let adder = adder + 1;
         }
         //if the cursor is not on the end of the grid, move its x-coordinate by 8
@@ -255,8 +269,11 @@ class Output {
         //if it's on the end of the grid, move it to the beginning of the next line
         //unless it's already on the very last line. In which case it shouldn't be moved
         if ((Output.getPosition(1) = 63) & (Output.getPosition(0) < 22)) {
-                do Output.moveCursor(Output.getPosition(0) + 1, 0);
+                do Output.println();
             }
+        else {
+            do Output.moveCursor(Output.getPosition(0), Output.getPosition(1));
+        }
         return;
 
     }
@@ -275,11 +292,13 @@ class Output {
 
     /** Advances the cursor to the beginning of the next line. */
     function void println() {
+        do Output.moveCursor(Output.getPosition(0) + 1, 0);
         return;
     }
 
     /** Moves the cursor one column back. */
     function void backSpace() {
+        do Output.moveCursor(Output.getPosition(0), Output.getPosition(1) - 1);
         return;
     }
 }
