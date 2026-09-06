@@ -55,25 +55,53 @@ class String {
         return;
     }
 
+
     /** Returns the integer value of this string, 
      *  until a non-digit character is detected. */
     method int intValue() {
+
+    }
+
+    function String int2String(val) {
+        //FOR NON NEGATIVE INTEGERS
+        var int lastDigit;
+        var char c;
+        var boolean is_negative;
+        let lastDigit = val;
+        let c = lastDigit + 48;
+        if (val < 0) {
+            let lastDigit = Math.abs(val);
+        }
+        while (~(lastDigit < 10)) {
+             let lastDigit = lastDigit - 10;
+        }
+        if (val < 10) {
+            return c;
+        }
+        else {
+            return int2String(val / 10).append(c);
+        }
+
     }
 
     /** Sets this string to hold a representation of the given value. */
     method void setInt(int val) {
+        let this = String.int2String(val);
+        return;
     }
 
     /** Returns the new line character. */
     function char newLine() {
-        return "\n";
+        return 128;
     }
 
     /** Returns the backspace character. */
     function char backSpace() {
+        return 129;
     }
 
     /** Returns the double quote (") character. */
     function char doubleQuote() {
+        return 34
     }
 }
