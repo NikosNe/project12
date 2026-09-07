@@ -39,14 +39,19 @@ class String {
 
     /** Sets the character at the j-th location of this string to c. */
     method void setCharAt(int j, char c) {
-        do str[j] = c;
-        return ;
+        let str[j] = c;
+        return;
     }
 
     /** Appends c to this string's end and returns this string. */
     method String appendChar(char c) {
-        do str[length] = c;
-        return str;
+        var int j;
+        //do Output.printInt(length);
+        //do Output.println();
+        let j = length;
+        let str[j] = c;
+        let length = length + 1;
+        return this;
     }
 
     /** Erases the last character from this string. */
@@ -59,19 +64,17 @@ class String {
     /** Returns the integer value of this string, 
      *  until a non-digit character is detected. */
     method int intValue() {
-
+        return 0;
     }
 
-    function String int2String(val) {
-        //FOR NON NEGATIVE INTEGERS
+    function String int2String(int val) {
         var int lastDigit;
+        var String str;
         var char c;
         var boolean is_negative;
         let lastDigit = val;
         let c = lastDigit + 48;
-        if (val < 0) {
-            let lastDigit = Math.abs(val);
-        }
+
         while (~(lastDigit < 10)) {
              let lastDigit = lastDigit - 10;
         }
@@ -79,14 +82,18 @@ class String {
             return c;
         }
         else {
-            return int2String(val / 10).append(c);
+            let str = String.int2String(val / 10);
+            return str.appendChar(c);
         }
-
     }
 
     /** Sets this string to hold a representation of the given value. */
     method void setInt(int val) {
-        let this = String.int2String(val);
+
+        if (val < 0) {
+            let val = Math.abs(val);
+        }
+        let str = String.int2String(val);
         return;
     }
 
@@ -102,6 +109,6 @@ class String {
 
     /** Returns the double quote (") character. */
     function char doubleQuote() {
-        return 34
+        return 34;
     }
 }
