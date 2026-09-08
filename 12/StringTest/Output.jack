@@ -267,6 +267,7 @@ class Output {
     function void printInt(int i) {
         var String s;
         let s = String.new(63);
+        // How do we know the length of the integer to instantiate a string from it?
     	do s.setInt(i);
         do Output.printString(s);
         return;
