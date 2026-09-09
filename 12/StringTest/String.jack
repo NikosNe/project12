@@ -65,34 +65,47 @@ class String {
     /** Returns the integer value of this string, 
      *  until a non-digit character is detected. */
     method int intValue() {
-        return 0;
+        var int val, index, d;
+        var boolean is_negative;
+        let val = 0;
+        let index = 0;
+        if (str[index] = 45) {
+            let index = index + 1;
+            let is_negative = true;
+        }
+        while (index < length) {
+            let d = str[index] - 48;
+            let val = (val * 10) + d;
+            let index = index + 1;
+        }
+        if (is_negative) {
+            let val = -val;
+        }
+        return val;
     }
 
 
     function String int2String(int val) {
-        var int lastDigit;
+        var int lastDigit, i;
         var String str_from_int;
-        var char c;
-        var boolean is_negative;
+        var int c;
+        if (val < 0) {
+            do appendChar(45);
+            let val = Math.abs(val);
+        }
         let lastDigit = val;
         let c = lastDigit + 48;
         while (~(lastDigit < 10)) {
              let lastDigit = lastDigit - 10;
         }
         if (val < 10) {
-            do Output.printChar(c);
-            do Output.println();
-            let length = length + 1;
-            do setCharAt(length - 1, c);
+            do appendChar(c);
             return c;
         }
         else {
             let str_from_int = String.int2String(val / 10);
             let c = lastDigit + 48;
-            do Output.printChar(c);
-            do Output.println();
-            let length = length + 1;
-            do setCharAt(length - 1, c);
+            do appendChar(c);
             return str_from_int.appendChar(c);
         }
     }
@@ -101,12 +114,9 @@ class String {
     method void setInt(int val) {
         var int index;
         var String str_from_int;
-        do String.int2String(val);
+        let str_from_int = String.new(1);
 
-        //if (val < 0) {
-            //let val = Math.abs(val);
-        //}
-        //let str = String.int2String(val);
+        do String.int2String(val);
         return;
     }
 
