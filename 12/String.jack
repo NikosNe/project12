@@ -84,30 +84,6 @@ class String {
         return val;
     }
 
-    //function String int2String(int val) {
-        //var int lastDigit, i;
-        //var String str_from_int;
-        //var int c;
-        //if (val < 0) {
-            //do appendChar(45);
-            //let val = Math.abs(val);
-        //}
-        //let lastDigit = val;
-        //let c = lastDigit + 48;
-        //while (~(lastDigit < 10)) {
-             //let lastDigit = lastDigit - 10;
-        //}
-        //if (val < 10) {
-            //do appendChar(c);
-            //return c;
-        //}
-        //else {
-            //let str_from_int = String.int2String(val / 10);
-            //let c = lastDigit + 48;
-            //do appendChar(c);
-            //return str_from_int.appendChar(c);
-        //}
-    //}
 
     method String int2String(int val) {
         var int lastDigit;
