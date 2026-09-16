@@ -1,0 +1,164 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+     static Array ram;
+     static Array heap;
+     static int freeList, heap_size, total_block_size;
+
+    /** Initializes the class. */
+    function void init() {
+        let ram = 0;
+        let total_block_size = 0;
+        let heap = 2048;
+        let heap_size = 14336;
+        let freeList = 2048;
+        let heap[0] = 0;
+        let heap[1] = heap_size - 2;
+        return;
+    }
+
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+        return ram[address];
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+        let ram[address] = value;
+        return;
+    }
+
+    function boolean is_enough_space(int total_block_size, int size) {
+        // Checks if there is still space within the heap limits
+        if ((heap_size - total_block_size < size + 2)) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+/** Finds an available RAM block of the given size and returns
+ *  a reference to its base address. */
+
+ function Array alloc(int size) {
+        var int addr, new_size, result;
+        let addr = heap;
+
+    // While there is still enough space within the limits of the heap
+    if (Memory.is_enough_space(total_block_size, size)) {
+
+        while (Memory.peek(addr + 1) < (size + 2)) {
+            //do Output.printString("The array size at ");
+            //do Output.printInt(addr + 1);
+            //do Output.printString(" is ");
+            //do Output.printInt(Memory.peek(addr + 1));
+            //do Output.printString(" and the size to allocate is ");
+            //do Output.printInt(size + 2);
+            //do Output.println();
+            if ((Memory.peek(addr) = 0) | (~(Memory.peek(addr) < 16383))) {
+                return 0;
+            }
+            let addr = Memory.peek(addr);
+        }
+
+        // If the segment is possible,
+        // decrease the available size of the segment by the given size plus the two overhead blocks
+        let new_size = Memory.peek(addr + 1) - size - 2;
+        //do Output.printString(" ");
+        //do Output.printInt(Memory.peek(addr + 1));
+        //do Output.println();
+
+        // Adjust the size of the possible segment
+        do Memory.poke(addr + 1, new_size);
+        //do Output.printString("New size ");
+        //do Output.printInt(new_size);
+        //do Output.printString(" is poked into ");
+        //do Output.printInt(heap + addr + 1);
+        //do Output.println();
+        // Re-adjust the total size occupied by blocks
+        let total_block_size = total_block_size + size + 2;
+        //do Output.printString("total_block_size is ");
+        //do Output.printInt(total_block_size);
+        //do Output.println();
+
+        //Assign the block size.
+        //do Memory.poke(addr + new_size + 3, size);
+        //do Output.printString("At ");
+        //do Output.printInt(addr + new_size + 3);
+        //do Output.printString(" we assign ");
+        //do Output.printInt(size);
+        //do Output.println();
+
+        // Get the data address of the available segment
+        let result = addr + new_size + 4;
+
+        //do Output.printString("The data address of the available segment is ");
+        //do Output.printInt(result);
+        //do Output.printString(" and it goes up to ");
+        //do Output.printInt(result + heap[addr + new_size + 3] - 1);
+        //do Output.println();
+
+        // Adjust freeList if needed. It should be the base address of the first non-zero sized segment.
+        let addr = freeList;
+        // traverse the linked list. Assign freeList to the first non-zero sized segment
+        while(Memory.peek(addr) > 0) {
+             if (Memory.peek(addr + 1) > 0) {
+                 let freeList = addr;
+                 return result;
+                 }
+             else {
+                 let addr = Memory.peek(addr);
+                 }
+         }
+        //do Output.printString("The data address of the new segment is ");
+        //do Output.printInt(result);
+        //do Output.println();
+        return result;
+        }
+       return 0;
+        }
+
+    /** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+    function void deAlloc(Array o) {
+        var int addr;
+        let addr = freeList;
+
+        // Find the first "next" block with a zero value
+        while (Memory.peek(addr) > 0) {
+            let addr = Memory.peek(addr);
+        }
+
+        // Assign the base address of o to this segment
+        do Memory.poke(addr, o - 2);
+        //do Output.printString("Poked ");
+        //do Output.printInt(o - 2);
+        //do Output.printString(" into ");
+        //do Output.printInt(addr);
+        //do Output.println();
+        // Assign the zero value to the "next" block of the newly deallocated block
+        do Memory.poke(o - 2, 0);
+        //do Output.printString("Poked ");
+        //do Output.printInt(0);
+        //do Output.printString(" into ");
+        //do Output.printInt(o - 2);
+        //do Output.println();
+        //do Output.printString("freed size is ");
+        //do Output.printInt(Memory.peek(o - 1));
+        //do Output.println();
+        let total_block_size = total_block_size - Memory.peek(o - 1) - 2;
+        //do Output.printString("total_block_size is ");
+        //do Output.printInt(total_block_size);
+        //do Output.println();
+        return;
+    }
+}
