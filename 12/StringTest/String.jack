@@ -17,10 +17,13 @@ class String {
      *  and initial length of 0. */
     constructor String new(int maxLength) {
         if (maxLength = 0) {
-            return this;
+            let str = null;
         }
-        let str = Array.new(maxLength);
-        let length = 0;
+        else {
+            //let str = Array.new(maxLength);
+            let str = 1;
+            let length = 0;
+            }
         return this;
     }
 
@@ -62,7 +65,7 @@ class String {
     }
 
 
-    /** Returns the integer value of this string, 
+    /** Returns the integer value of this string,
      *  until a non-digit character is detected. */
     method int intValue() {
         var int val, index, d;
@@ -83,31 +86,6 @@ class String {
         }
         return val;
     }
-
-    //function String int2String(int val) {
-        //var int lastDigit, i;
-        //var String str_from_int;
-        //var int c;
-        //if (val < 0) {
-            //do appendChar(45);
-            //let val = Math.abs(val);
-        //}
-        //let lastDigit = val;
-        //let c = lastDigit + 48;
-        //while (~(lastDigit < 10)) {
-             //let lastDigit = lastDigit - 10;
-        //}
-        //if (val < 10) {
-            //do appendChar(c);
-            //return c;
-        //}
-        //else {
-            //let str_from_int = String.int2String(val / 10);
-            //let c = lastDigit + 48;
-            //do appendChar(c);
-            //return str_from_int.appendChar(c);
-        //}
-    //}
 
     method String int2String(int val) {
         var int lastDigit;

@@ -34,7 +34,7 @@ class Main {
         // Test aborts if the block is not valid.
 
         let out[0] = 20;
-        let a = Memory.alloc(20); // total block size 22
+        let a = Memory.alloc(20);
         let out[3] = a;                     // RAM[17003] = block address
 
         let out[0] = 21;
@@ -48,8 +48,9 @@ class Main {
         //
         // Common failure: first block was not removed from free list so space
         // for this block was found within the first block.
+
         let out[0] = 30;
-        let b = Memory.alloc(3); // total block size 27
+        let b = Memory.alloc(3);
         let out[4] = b;                     // RAM[17004] = block address
 
         let out[0] = 31;
@@ -64,7 +65,7 @@ class Main {
         // Test aborts if the block is not valid or overlaps.
 
         let out[0] = 40;
-        let c = Memory.alloc(500); // total block size 529
+        let c = Memory.alloc(500);
         let out[5] = c;                     // RAM[17005] = block address
 
         let out[0] = 41;
@@ -80,10 +81,10 @@ class Main {
         // Common failure: free list corrupted by deAlloc().
 
         let out[0] = 50;
-        do Memory.deAlloc(a); // total block size 507
+        do Memory.deAlloc(a);
 
         let out[0] = 51;
-        do Memory.deAlloc(b); // total block size 502
+        do Memory.deAlloc(b);
         let out[0] = 52;
 
         // Allocate a memory block.
@@ -94,7 +95,7 @@ class Main {
         // Common failure: free list corrupted by deAlloc().
 
         let out[0] = 60;
-        let b = Memory.alloc(3); // total block size 507
+        let b = Memory.alloc(3);
         let out[6] = b;                     // RAM[17006] = block address
 
         let out[0] = 61;
@@ -106,17 +107,17 @@ class Main {
         // Deallocate blocks 'b' and 'c'.
 
         let out[0] = 70;
-        do Memory.deAlloc(c); // total block size 5
+        do Memory.deAlloc(c);
 
         let out[0] = 71;
-        do Memory.deAlloc(b); // total block size 0
+        do Memory.deAlloc(b);
         let out[0] = 72;
 
         // Test that deallocated blocks are placed on the free list and can
         // be reused.
 
         let out[0] = 70;
-        let a = Memory.alloc(8000); // total block size 8002
+        let a = Memory.alloc(8000);
         let out[7] = a;                     // RAM[17007] = block address
 
         let out[0] = 71;
@@ -157,18 +158,7 @@ class Main {
     function void checkRange(int a, int a_len) {
         var int a_high;
         let a_high = (a + a_len)-1;
-        //do Output.printString("Returned a is ");
-        //do Output.printInt(a);
-        //do Output.println();
         if ((a < 2048) | ((a_high) > 16383)) {
-            do Output.printString("Block goes up to ");
-            do Output.printInt(a_high);
-            do Output.println();
-            do Output.printString("And a is ");
-            do Output.printInt(a);
-            do Output.println();
-            do Output.printString("Block out of range: ");
-            //do Output.println();
             // Block is not entirely within heap.
             do Sys.halt();
         }
@@ -186,7 +176,6 @@ class Main {
         let b_high = (b + b_len)-1;
         if ( ~ ((a > b_high) | (a_high < b))) {
             // Block overlaps excluded range.
-            do Output.printString("Block halted");
             do Sys.halt();
         }
         return;
